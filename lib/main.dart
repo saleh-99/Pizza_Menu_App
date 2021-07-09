@@ -8,7 +8,8 @@ import 'Psges/home_page.dart';
 import 'Psges/google_map_page.dart';
 import 'Psges/login_page.dart';
 import 'Psges/product_page.dart';
-import 'flutter_flow/app_theme.dart';
+import 'components/app_theme.dart';
+import 'models/modals.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
+          initialData: null,
         )
       ],
       child: MaterialApp(
@@ -48,7 +50,11 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      return NavBarPage();
+      return StreamProvider<List<PizzaDetails>>.value(
+        initialData: [],
+        value: Database().getPizzaDetailsrList(),
+        child: NavBarPage(),
+      );
     }
     return LoginPageWidget();
   }

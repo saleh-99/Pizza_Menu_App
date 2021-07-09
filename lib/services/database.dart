@@ -4,17 +4,39 @@ import 'package:pizzeria_menu/models/modals.dart';
 
 class Database {
   final _cloudfirestore = FirebaseFirestore.instance;
-
-  Stream<List<PizzaDetails>> getPizzaDetailsrList(String departmentName) {
-    return _cloudfirestore.collection('foodMenu').snapshots().map((snapShot) =>
-        snapShot.docs
+  final PizzaDetails pizzaDetailsProduct = new PizzaDetails(
+      title: "",
+      description: "",
+      image: "",
+      modifiers: <Modifier>[
+        Modifier(
+            oneMany: true,
+            required: true,
+            options: [Option(name: "", price: "")])
+      ]);
+  Stream<List<PizzaDetails>> getPizzaDetailsrList() {
+    return _cloudfirestore
+        .collection('foodMenu')
+        .snapshots()
+        .map((snapShot) => snapShot.docs
             .map((document) => PizzaDetails.fromFirestore(document))
-            .toList());
+            .toList())
+        .handleError((e) {
+      print(e);
+    });
   }
 
   void createRecord(PizzaDetails pizzaDetails) async {
     Map<String, dynamic> m;
     await _cloudfirestore.collection('Collage').doc("").set(m);
+  }
+
+  void clearRecord() {
+    pizzaDetailsProduct
+      ..title = ""
+      ..description = ""
+      ..image = ""
+      ..modifiers = [];
   }
 }
 

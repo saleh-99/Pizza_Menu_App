@@ -1,4 +1,4 @@
-import '../flutter_flow/app_theme.dart';
+import '../components/app_theme.dart';
 
 import 'package:flutter/material.dart';
 

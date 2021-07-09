@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class PizzaDetails {
-  final title;
-  final description;
-  final image;
+  String title;
+  String description;
+  String image;
 
-  List<Modifier> modifiers;
+  List<dynamic> modifiers = <Modifier>[];
 
   PizzaDetails({this.title, this.description, this.image, this.modifiers});
 
@@ -14,39 +13,37 @@ class PizzaDetails {
     Map data = doc.data();
     return PizzaDetails(
       title: data['title'] ?? 'title',
-      description: ['description'] ?? 'description',
+      description: data['description'] ?? 'description',
       image: data['image'] ?? 'HU image',
-      modifiers: data['modifier'].forEach((element) {
-        return Modifier.fromMap(element);
-      }),
+      modifiers:
+          data['modifier'].map((element) => Modifier.fromMap(element)).toList(),
     );
   }
 }
 
 class Modifier {
-  final name;
-  final required;
-  final oneMany;
+  String name;
+  bool required;
+  bool oneMany;
 
-  List<Option> options;
+  List<dynamic> options = <Option>[];
 
   Modifier({this.required, this.oneMany, this.name, this.options});
 
   factory Modifier.fromMap(Map data) {
     return Modifier(
-      name: data['Name'] ?? 'No Name',
+      name: data['name'] ?? 'No Name',
       required: data['required'] ?? 'No Name',
       oneMany: data['oneMany'] ?? 'No Name',
-      options: data['option'].forEach((element) {
-        return Option.fromMap(element);
-      }),
+      options:
+          data['opinion'].map((element) => Option.fromMap(element)).toList(),
     );
   }
 }
 
 class Option {
-  final name;
-  final price;
+  String name;
+  String price;
 
   Option({
     this.name,

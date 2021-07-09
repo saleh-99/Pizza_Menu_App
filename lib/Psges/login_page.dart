@@ -1,11 +1,9 @@
 import 'package:pizzeria_menu/services/database.dart';
 
-import '../flutter_flow/app_theme.dart';
+import '../components/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../main.dart';
 
 class LoginPageWidget extends StatefulWidget {
   LoginPageWidget({Key key}) : super(key: key);
