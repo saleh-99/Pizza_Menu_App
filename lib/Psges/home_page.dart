@@ -24,10 +24,10 @@ class _HomePageState extends State<HomePage> {
           if (PizzaDetails != null) {
             return ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: pizzaDetails.length + 1,
+              itemCount: pizzaDetails.length,
               itemBuilder: (_, int index) {
                 if (pizzaDetails.isNotEmpty)
-                  return pizzaDetailItem(pizzaDetail: pizzaDetails[0]);
+                  return pizzaDetailItem(pizzaDetail: pizzaDetails[index]);
                 return Text("data");
               },
             );
@@ -58,11 +58,17 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     width: 120,
                     height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: NetworkImage(pizzaDetail.image),
-                          fit: BoxFit.scaleDown),
+                    child: Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(40.0),
+                        child: Image.network(
+                          pizzaDetail.image,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Text('No Image');
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -95,9 +101,10 @@ class _HomePageState extends State<HomePage> {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: pizzaDetail.modifiers.length + 3,
+              itemCount: pizzaDetail.modifiers.length,
               itemBuilder: (_, int index) {
-                return modifierDetailItem(modifier: pizzaDetail.modifiers[0]);
+                return modifierDetailItem(
+                    modifier: pizzaDetail.modifiers[index]);
               },
             ),
           ],
@@ -125,8 +132,7 @@ class _HomePageState extends State<HomePage> {
                 RadioButtonGroup(
                   options: modifier.options
                       .map((item) => item.name.toString())
-                      .toList()
-                        ..add("sds"),
+                      .toList(),
                   onChanged: (value) {
                     setState(() => null);
                   },

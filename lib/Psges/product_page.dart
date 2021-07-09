@@ -44,11 +44,18 @@ class _ProductPageState extends State<ProductPage>
     super.build(context);
     final pizzaDetailsProduct =
         Provider.of<Database>(context).pizzaDetailsProduct;
+    titleFieldController.text = pizzaDetailsProduct.title;
+    descriptionFieldController.text = pizzaDetailsProduct.description;
+    _imageFile = pizzaDetailsProduct.image != ""
+        ? File(pizzaDetailsProduct.image)
+        : null;
     return Scaffold(
       backgroundColor: Color(0xFFF1F4F8),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print('FloatingActionButton pressed ...');
+          setState(() {
+            Provider.of<Database>(context, listen: false).createRecord();
+          });
         },
         backgroundColor: AppTheme.secondaryColor,
         elevation: 8,
@@ -63,113 +70,119 @@ class _ProductPageState extends State<ProductPage>
           children: [
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                    child: _imageFile != null
-                        ? Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: AssetImage(_imageFile.path),
-                                  fit: BoxFit.scaleDown),
-                            ),
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.camera_alt),
-                            iconSize: 75.0,
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return SimpleDialog(
-                                        title: Text("Camera/Gallery"),
-                                        children: <Widget>[
-                                          SimpleDialogOption(
-                                            onPressed: () async {
-                                              Navigator.pop(
-                                                  context); //close the dialog box
-                                              _getImage(ImageSource.gallery);
-                                            },
-                                            child:
-                                                const Text('Pick From Gallery'),
-                                          ),
-                                          SimpleDialogOption(
-                                            onPressed: () async {
-                                              Navigator.pop(
-                                                  context); //close the dialog box
-                                              _getImage(ImageSource.camera);
-                                            },
-                                            child: const Text(
-                                                'Take A New Picture'),
-                                          ),
-                                        ]);
-                                  });
-                            },
-                          ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                        child: TextFormField(
-                          onChanged: (string) {
-                            print(string);
-                            pizzaDetailsProduct.title =
-                                titleFieldController.text;
+                      Container(
+                        height: 150,
+                        width: 150,
+                        child: MaterialButton(
+                          height: 150,
+                          elevation: 15,
+                          child: _imageFile != null
+                              ? Image(
+                                  image: AssetImage(_imageFile.path),
+                                  fit: BoxFit.scaleDown,
+                                )
+                              : Icon(
+                                  Icons.camera_alt,
+                                  size: 60,
+                                ),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SimpleDialog(
+                                      title: Text("Camera/Gallery"),
+                                      children: <Widget>[
+                                        SimpleDialogOption(
+                                          onPressed: () async {
+                                            Navigator.pop(
+                                                context); //close the dialog box
+                                            await _getImage(
+                                                ImageSource.gallery);
+                                            pizzaDetailsProduct.image =
+                                                _imageFile.path;
+                                          },
+                                          child:
+                                              const Text('Pick From Gallery'),
+                                        ),
+                                        SimpleDialogOption(
+                                          onPressed: () async {
+                                            Navigator.pop(
+                                                context); //close the dialog box
+                                            _getImage(ImageSource.camera);
+                                          },
+                                          child:
+                                              const Text('Take A New Picture'),
+                                        ),
+                                      ]);
+                                });
                           },
-                          controller: titleFieldController,
-                          decoration: InputDecoration(
-                            hintText: 'Title',
-                            hintStyle: AppTheme.title3,
-                            enabledBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: Color(0x74FAA307),
-                          ),
-                          style: AppTheme.title3,
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                        child: TextFormField(
-                          onChanged: (string) {
-                            print(string);
-                            pizzaDetailsProduct.description =
-                                descriptionFieldController.text;
-                          },
-                          controller: descriptionFieldController,
-                          decoration: InputDecoration(
-                            hintText: 'Description',
-                            hintStyle: AppTheme.bodyText2,
-                            enabledBorder: AppTheme.kUnderlineInputBorder,
-                            focusedBorder: AppTheme.kUnderlineInputBorder,
-                            filled: true,
-                            fillColor: Color(0x4FFAA307),
-                          ),
-                          style: AppTheme.bodyText2,
-                          maxLines: 3,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                              child: TextFormField(
+                                onChanged: (string) {
+                                  pizzaDetailsProduct.title =
+                                      titleFieldController.text;
+                                },
+                                controller: titleFieldController,
+                                decoration: InputDecoration(
+                                  hintText: 'Title',
+                                  hintStyle: AppTheme.title3,
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Color(0x74FAA307),
+                                ),
+                                style: AppTheme.title3,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                              child: TextFormField(
+                                onChanged: (string) {
+                                  pizzaDetailsProduct.description =
+                                      descriptionFieldController.text;
+                                },
+                                controller: descriptionFieldController,
+                                decoration: InputDecoration(
+                                  hintText: 'Description',
+                                  hintStyle: AppTheme.bodyText2,
+                                  enabledBorder: AppTheme.kUnderlineInputBorder,
+                                  focusedBorder: AppTheme.kUnderlineInputBorder,
+                                  filled: true,
+                                  fillColor: Color(0x4FFAA307),
+                                ),
+                                style: AppTheme.bodyText2,
+                                maxLines: 3,
+                              ),
+                            )
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                   Row(children: <Widget>[
