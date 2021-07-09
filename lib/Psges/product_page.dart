@@ -52,9 +52,9 @@ class _ProductPageState extends State<ProductPage>
     return Scaffold(
       backgroundColor: Color(0xFFF1F4F8),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            Provider.of<Database>(context, listen: false).createRecord();
+        onPressed: () async {
+          setState(() async {
+            await Provider.of<Database>(context, listen: false).createRecord();
           });
         },
         backgroundColor: AppTheme.secondaryColor,

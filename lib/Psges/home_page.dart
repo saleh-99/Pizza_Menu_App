@@ -1,3 +1,4 @@
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pizzeria_menu/models/modals.dart';
 import 'package:provider/provider.dart';
 import '../components/radio_button_group.dart';
@@ -18,23 +19,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<List<PizzaDetails>>(
-        builder: (_, List<PizzaDetails> pizzaDetails, w) {
-          if (PizzaDetails != null) {
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: pizzaDetails.length,
-              itemBuilder: (_, int index) {
-                if (pizzaDetails.isNotEmpty)
-                  return pizzaDetailItem(pizzaDetail: pizzaDetails[index]);
-                return Text("data");
-              },
-            );
-          }
-          return Text('loading');
-        },
-      ),
+    return Consumer<List<PizzaDetails>>(
+      builder: (_, List<PizzaDetails> pizzaDetails, w) {
+        if (PizzaDetails != null) {
+          return ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: pizzaDetails.length,
+            itemBuilder: (_, int index) {
+              if (pizzaDetails.isNotEmpty)
+                return pizzaDetailItem(pizzaDetail: pizzaDetails[index]);
+              return Text("data");
+            },
+          );
+        }
+        return Text('loading');
+      },
     );
   }
 
@@ -42,14 +42,13 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       child: Container(
-        width: double.infinity,
         decoration: BoxDecoration(
           color: Color(0x8FFAA307),
           borderRadius: BorderRadius.circular(25),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
@@ -87,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                             style: AppTheme.title1,
                           ),
                         ),
-                        AutoSizeText(
+                        Text(
                           pizzaDetail.description,
                           textAlign: TextAlign.start,
                           style: AppTheme.bodyText2,
@@ -98,7 +97,17 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            ListView.builder(
+            Divider(
+              height: 8,
+              thickness: 1.5,
+              indent: 20,
+              endIndent: 20,
+              color: AppTheme.secondaryColor,
+            ),
+            StaggeredGridView.countBuilder(
+              crossAxisCount: 4,
+              crossAxisSpacing: 3,
+              mainAxisSpacing: 4,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: pizzaDetail.modifiers.length,
@@ -106,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                 return modifierDetailItem(
                     modifier: pizzaDetail.modifiers[index]);
               },
+              staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
             ),
           ],
         ),
@@ -117,36 +127,31 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(modifier.name),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(modifier.name + " :"),
+          ),
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
-                border: Border.all(color: Colors.blueGrey)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RadioButtonGroup(
-                  options: modifier.options
-                      .map((item) => item.name.toString())
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() => null);
-                  },
-                  optionHeight: 30,
-                  textPadding: EdgeInsets.all(2.0),
-                  textStyle: AppTheme.bodyText1,
-                  buttonPosition: RadioButtonPosition.left,
-                  direction: Axis.vertical,
-                  radioButtonColor: AppTheme.secondaryColor,
-                  toggleable: !modifier.required,
-                  horizontalAlignment: WrapAlignment.start,
-                  verticalAlignment: WrapCrossAlignment.start,
-                )
-              ],
+                border: Border.all(color: Colors.blueGrey, width: 1.5)),
+            child: RadioButtonGroup(
+              options:
+                  modifier.options.map((item) => item.name.toString()).toList(),
+              onChanged: (value) {
+                setState(() => null);
+              },
+              optionHeight: 30,
+              textPadding: EdgeInsets.all(2.0),
+              textStyle: AppTheme.bodyText1,
+              buttonPosition: RadioButtonPosition.left,
+              direction: Axis.vertical,
+              radioButtonColor: AppTheme.secondaryColor,
+              toggleable: !modifier.required,
+              horizontalAlignment: WrapAlignment.start,
+              verticalAlignment: WrapCrossAlignment.start,
             ),
           ),
         ],

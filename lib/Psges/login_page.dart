@@ -133,33 +133,74 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                     ),
                   ),
                 ),
-                Container(
-                  width: 300,
-                  height: 55,
-                  child: RaisedButton(
-                    onPressed: () {
-                      context.read<AuthenticationService>().signIn(
-                            email: emailFieldController.text.trim(),
-                            password: passFieldController.text.trim(),
-                          );
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(
-                        color: Colors.transparent,
-                        width: 2,
-                      ),
-                    ),
-                    textColor: Color(0xFFFAFAFA),
-                    color: AppTheme.secondaryColor,
-                    child: Text(
-                      'Login',
-                      style: GoogleFonts.getFont(
-                        'Roboto',
-                        color: Color(0xFFFAFAFA),
-                        fontSize: 18,
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Center(
+                        child: InkWell(
+                          onTap: () {
+                            context.read<AuthenticationService>().signIn(
+                                email: emailFieldController.text.trim(),
+                                password: passFieldController.text.trim());
+                          },
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                color: AppTheme.secondaryColor,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 35, vertical: 8),
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Icon(Icons.login),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Login',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )),
+                      Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: InkWell(
+                              onTap: () {
+                                context
+                                    .read<AuthenticationService>()
+                                    .signInWithGoogle();
+                              },
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    color: Color(0xFF397AF3),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Icon(Icons.android),
+                                      SizedBox(width: 12),
+                                      Text(
+                                        'Sign in with Google',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )),
+                      )
+                    ],
                   ),
                 )
               ],
