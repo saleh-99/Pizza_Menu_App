@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../components/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -12,6 +14,9 @@ class GoogleMapPage extends StatefulWidget {
 class _GoogleMapPageState extends State<GoogleMapPage> {
   TextEditingController textController;
 
+  static const initialCameraPosition =
+      CameraPosition(target: LatLng(31.9539, 35.9106), zoom: 9);
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +30,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       body: SafeArea(
         child: Stack(
           children: [
+            GoogleMap(
+              initialCameraPosition: initialCameraPosition,
+              myLocationButtonEnabled: false,
+              trafficEnabled: true,
+            ),
             Align(
               alignment: Alignment(0, 0.92),
               child: SingleChildScrollView(
