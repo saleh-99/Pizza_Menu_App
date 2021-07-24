@@ -4,9 +4,7 @@ A new Flutter project.
 
 screen shots of the APP
 
-![Alt text](ScreenShots/6.png?raw=true "Login page") 
-
-![Alt text](ScreenShots/5.png?raw=true "Google Sing in") 
+![Alt text](ScreenShots/6.png?raw=true "Login page")  ![Alt text](ScreenShots/5.png?raw=true "Google Sing in") 
 
 ![Alt text](ScreenShots/1.png?raw=true "Home Page Menu") 
 
